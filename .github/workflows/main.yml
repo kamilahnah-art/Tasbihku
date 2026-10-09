@@ -1,5 +1,5 @@
 
-name: Build TasbihKu
+name: Bangun TasbihKu
 
 on:
   workflow_dispatch:
@@ -18,17 +18,19 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Beri izin Gradle
-        run: chmod +x gradlew || true
+      - name: Siapkan Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Periksa proyek
+        run: |
+          ls -la
+          ls -la app
+
+      - name: Buat Gradle Wrapper
+        run: gradle wrapper
 
       - name: Build APK debug
-        run: |
-          if [ -f ./gradlew ]; then
-            ./gradlew assembleDebug
-          else
-            echo "File gradlew tidak ditemukan"
-            exit 1
-          fi
+        run: ./gradlew assembleDebug
 
       - name: Simpan APK
         uses: actions/upload-artifact@v4
@@ -36,3 +38,4 @@ jobs:
           name: TasbihKu-v1.3-builds
           path: app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
+
